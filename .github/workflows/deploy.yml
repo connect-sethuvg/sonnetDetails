@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,10 +28,13 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
-      - name: Add .nojekyll (skip Jekyll processing)
-        run: touch dist/.nojekyll
+      - name: Prepare deploy folders
+        run: |
+          touch dist/.nojekyll
+          rm -rf docs
+          cp -r dist docs
 
-      - name: Deploy dist to gh-pages branch
+      - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,3 +42,11 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
           commit_message: 'deploy: production build ${{ github.sha }}'
+
+      - name: Commit docs folder on main (Pages fallback)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --staged --quiet || git commit -m "deploy: update docs folder for GitHub Pages [skip ci]"
+          git push
