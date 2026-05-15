@@ -1,0 +1,116 @@
+{
+  "filterTags": [
+    { "id": "sunroof", "label": "Electric Sunroof" },
+    { "id": "adas", "label": "ADAS Level 1" },
+    { "id": "bose", "label": "Bose Audio" },
+    { "id": "camera360", "label": "360° Camera" },
+    { "id": "ventilated", "label": "Ventilated Seats" },
+    { "id": "kia-connect", "label": "Kia Connect" },
+    { "id": "wireless-charger", "label": "Wireless Charger" },
+    { "id": "alloy", "label": "Alloy Wheels" }
+  ],
+  "exterior": [
+    {
+      "title": "Crown Jewel LED Headlamps",
+      "description": "Ice Cube LED fog lamps and Star Map LED DRLs for a dazzling road presence."
+    },
+    {
+      "title": "Signature Tiger Nose Grille",
+      "description": "Knurled premium dark metallic surround — the untamed face of Sonet 2026."
+    },
+    {
+      "title": "Star Map LED Connected Tail Lamps",
+      "description": "Distinctive connected lighting signature as you drive away."
+    },
+    {
+      "title": "R16 Sporty Crystal Cut Alloy Wheels",
+      "description": "40.56 cm crystal-cut alloys with a striking, prowling stance."
+    }
+  ],
+  "interior": [
+    {
+      "title": "Bose Premium 7-Speaker",
+      "description": "Immersive cabin audio tuned for the wild at heart."
+    },
+    {
+      "title": "LED Ambient Sound Lighting",
+      "description": "Mood lighting that responds to your drive."
+    },
+    {
+      "title": "Front Ventilated Seats",
+      "description": "Stay cool on Kerala roads with ventilated comfort."
+    },
+    {
+      "title": "10.25\" HD Touchscreen & Digital Cluster",
+      "description": "Full digital cockpit with wireless CarPlay & Android Auto."
+    }
+  ],
+  "safety": [
+    { "title": "6 Airbags", "description": "Front, side & curtain airbags as standard across trims." },
+    { "title": "ESC", "description": "Electronic Stability Control for confident handling." },
+    { "title": "HAC", "description": "Hill-start Assist Control on inclines." },
+    { "title": "VSM", "description": "Vehicle Stability Management integrated with ESC." },
+    { "title": "ADAS Level 1", "description": "10 autonomous safety features on GTX+ & X-Line." }
+  ],
+  "connected": [
+    { "title": "Kia Connect", "description": "70+ connected features via smartphone & smartwatch." },
+    { "title": "Alexa Integration", "description": "Home-to-car voice commands and seamless control." },
+    { "title": "OTA Updates", "description": "Over-the-air map and system updates." },
+    { "title": "Find My Car", "description": "Locate your Sonet with surround view monitoring." },
+    { "title": "Remote AC", "description": "Pre-condition cabin temperature from anywhere." }
+  ],
+  "adas": [
+  {
+      "title": "Lane Keep Assist",
+      "description": "Gently steers to keep you centered in your lane."
+    },
+    {
+      "title": "Blind View Monitor",
+      "description": "Live feed in the cluster when indicating to change lanes."
+    },
+    {
+      "title": "Forward Collision Avoidance",
+      "description": "Alerts and assists to help avoid frontal collisions."
+    },
+    {
+      "title": "Driver Attention Warning",
+      "description": "Monitors attention level and alerts when focus drops."
+    },
+    {
+      "title": "High Beam Assist",
+      "description": "Auto high/low beam based on oncoming traffic."
+    }
+  ],
+  "engines": [
+    {
+      "id": "g12-petrol",
+      "name": "1.2 Petrol",
+      "powerKw": 61,
+      "torqueNm": 115,
+      "fuel": "petrol",
+      "tagline": "Efficient everyday drive"
+    },
+    {
+      "id": "g10-turbo",
+      "name": "1.0 Turbo Petrol",
+      "powerKw": 88,
+      "torqueNm": 172,
+      "fuel": "petrol",
+      "tagline": "Turbocharged thrill"
+    },
+    {
+      "id": "d15-diesel",
+      "name": "1.5 Diesel",
+      "powerKw": 85,
+      "torqueNm": 250,
+      "fuel": "diesel",
+      "tagline": "Torque for every terrain"
+    }
+  ],
+  "comparePresets": [
+    { "id": "htk-gtx", "label": "HTK+ vs GTX+", "variantAId": "d-at-htk-plus", "variantBId": "p-dct-gtx-plus" },
+    { "id": "htx-gtx", "label": "HTX vs GTX+", "variantAId": "p-dct-htx", "variantBId": "p-dct-gtx-plus" },
+    { "id": "fuel", "label": "Petrol vs Diesel", "variantAId": "p-dct-htx", "variantBId": "d-at-htx" },
+    { "id": "gearbox", "label": "Manual vs Automatic", "variantAId": "p-mt-htk-plus", "variantBId": "p-dct-htk-plus-o" }
+  ]
+}
