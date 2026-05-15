@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kia Sonet – Automatic Variant Comparison 2026</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #BB1C29; --dark: #111; --mid: #555; --light: #f4f4f4;
+    --border: #e0e0e0; --white: #fff;
+    --petrol-bg: #e8f2fb; --petrol-fg: #0c447c;
+    --diesel-bg: #e8f5e2; --diesel-fg: #2a5c0e;
+    --rec-bg: #e8f2fb; --rec-border: #2563eb;
+    --card-radius: 12px;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f0f0;
+    color: var(--dark);
+    min-height: 100vh;
+  }
+  header {
+    background: var(--dark);
+    padding: 18px 24px 14px;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
+  header h1 span { color: var(--red); }
+  header p { font-size: 11px; color: #aaa; margin-top: 3px; }
+  main { max-width: 960px; margin: 0 auto; padding: 20px 14px 40px; }
+  .filter-bar {
+    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-bar span { font-size: 13px; color: var(--mid); margin-right: 4px; }
+  .pill {
+    padding: 7px 18px; border-radius: 999px; border: 1.5px solid var(--border);
+    background: var(--white); font-size: 13px; cursor: pointer;
+    font-weight: 500; transition: all 0.15s; color: var(--dark);
+  }
+  .pill.active { background: var(--dark); color: #fff; border-color: var(--dark); }
+  .pill:hover:not(.active) { border-color: #999; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--white); border-radius: var(--card-radius);
+    border: 1.5px solid var(--border);
+    overflow: hidden; transition: box-shadow 0.15s, transform 0.15s;
+    cursor: pointer;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+  .card.recommended { border-color: var(--rec-border); border-width: 2px; }
+  .card-engine-bar {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+    padding: 5px 12px; text-transform: uppercase;
+  }
+  .card-engine-bar.petrol { background: var(--petrol-bg); color: var(--petrol-fg); }
+  .card-engine-bar.diesel { background: var(--diesel-bg); color: var(--diesel-fg); }
+  .rec-bar {
+    background: var(--rec-bg); color: var(--rec-border);
+    font-size: 10px; font-weight: 700; padding: 4px 12px;
+    letter-spacing: 0.4px;
+  }
+  .card-body { padding: 12px 14px 14px; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .card-title { font-size: 16px; font-weight: 700; color: var(--dark); line-height: 1.2; }
+  .card-sub { font-size: 11px; color: var(--mid); margin-top: 3px; }
+  .card-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 9px;
+    border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .price-block { text-align: right; flex-shrink: 0; }
+  .price-main { font-size: 17px; font-weight: 800; color: var(--dark); }
+  .price-label { font-size: 9px; color: var(--mid); }
+  .price-ex { font-size: 11px; color: var(--mid); margin-top: 2px; }
+  .divider { height: 1px; background: var(--border); margin: 10px 0; }
+  .highlights { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .hl-chip {
+    font-size: 10.5px; padding: 3px 9px; border-radius: 999px;
+    background: var(--light); color: var(--mid);
+    border: 1px solid var(--border);
+  }
+  .expand-btn {
+    font-size: 11px; color: var(--mid); display: flex; align-items: center;
+    gap: 4px; margin-top: 6px;
+  }
+  .features-list { margin-top: 10px; }
+  .features-list li {
+    font-size: 12px; color: var(--dark); padding: 3px 0 3px 14px;
+    position: relative; line-height: 1.4;
+  }
+  .features-list li::before {
+    content: "✓"; position: absolute; left: 0; color: #2a9d2a; font-weight: 700;
+  }
+  .note-bar {
+    background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px;
+    padding: 10px 14px; margin-top: 20px; font-size: 11px; color: #7a5800; line-height: 1.6;
+  }
+  .summary-section { margin-top: 28px; }
+  .summary-section h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--dark); }
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--white); border-radius: 10px; overflow: hidden; }
+  .summary-table th {
+    background: var(--dark); color: #fff; text-align: left;
+    padding: 9px 10px; font-size: 11px; font-weight: 600;
+  }
+  .summary-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:nth-child(even) td { background: var(--light); }
+  .summary-table td.num { text-align: right; font-weight: 700; }
+  .summary-table th.num { text-align: right; }
+  .badge-rec { background: #dbeafe; color: #1d4ed8; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 15px; }
+    .summary-table { font-size: 10px; }
+    .summary-table th, .summary-table td { padding: 6px 7px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>KIA SONET</span> — Automatic Variant Comparison</h1>
+  <p>Kerala On-Road Prices · Incheon Motors · W.E.F. 01-04-2026 · iMT variants excluded</p>
+</header>
+
+<main id="root"></main>
+
+<script type="text/babel">
+const fmt = n => {
+  const s = String(n);
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  return "₹" + (rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + last3 : last3);
+};
+
+const VARIANTS = [
+  { id:1, trim:"HTE(O)", engine:"Diesel 1.5", trans:"6AT", ex:979900, onroad:1203045, badge:"Entry Auto", badgeBg:"#e8f5e2", badgeFg:"#2a5c0e",
+    highlights:["Electric Sunroof","Star Map LED DRLs","R16 Styled Wheels"],
+    features:["Electric Sunroof","Star Map LED DRLs","Rear Sunshade Curtains","R16 Styled Wheels","All Door Power Windows","Manual AC","Sunglass Holder","6 Airbags as standard","15 Safety Features standard"], rec:false },
+
+  { id:2, trim:"HTK(O)", engine:"Petrol 1.0T", trans:"7DCT", ex:994900, onroad:1212934, badge:"Popular", badgeBg:"#e8f2fb", badgeFg:"#0c447c",
+    highlights:["8\" Touchscreen","Auto Climate Control","Electric Sunroof"],
+    features:["8\" Touchscreen + Wireless Android Auto & Apple CarPlay","Rear View Camera with Guidelines","Fully Automatic Climate Control","Electric Sunroof","Star Map LED DRLs","LED Connected Tail Lamps","R16 Styled Wheels","Keyless Entry","Burglar Alarm","6 Airbags + 15 Safety Features"], rec:false },
+
+  { id:3, trim:"HTK(O)", engine:"Diesel 1.5", trans:"6AT", ex:1079900, onroad:1351402, badge:"Popular", badgeBg:"#e8f2fb", badgeFg:"#0c447c",
+    highlights:["8\" Touchscreen","Auto Climate Control","Electric Sunroof"],
+    features:["8\" Touchscreen + Wireless Android Auto & Apple CarPlay","Rear View Camera with Guidelines","Fully Automatic Climate Control","Electric Sunroof","Star Map LED DRLs","LED Connected Tail Lamps","R16 Styled Wheels","Keyless Entry","6 Airbags + 15 Safety Features"], rec:false },
+
+  { id:4, trim:"HTK Plus", engine:"Diesel 1.5", trans:"6AT", ex:1115900, onroad:1394227, badge:"Value Pick", badgeBg:"#fef3c7", badgeFg:"#78350f",
+    highlights:["Alloy Wheels","Smart Key + Push Start","Remote Engine Start"],
+    features:["R16 Sporty Crystal Cut Alloy Wheels","Smart Key with Push Button Start","Wireless Smartphone Charger","60:40 Split Fold Rear Seats","Rear Centre Armrest with Cup Holders","Leatherette Wrapped Steering & Gear Knob","Remote Engine Start","8\" Touchscreen + CarPlay/Android Auto","Auto Climate Control","Electric Sunroof"], rec:false },
+
+  { id:5, trim:"HTK+(O)", engine:"Petrol 1.0T", trans:"7DCT", ex:1089900, onroad:1355666, badge:"Feature-rich", badgeBg:"#fef3c7", badgeFg:"#78350f",
+    highlights:["Crown Jewel LED Headlamps","Dual Dash Camera","Crystal Cut Alloys"],
+    features:["Crown Jewel LED Headlamps + Ice Cube LED Fog Lamps","R16 Crystal Cut Alloy Wheels","Indigo Pera Leatherette Seats","Dash Camera with Dual Camera","Remote Engine Start (G1.0T)","Wireless Smartphone Charger","Smart Key with Push Button Start","Electric Sunroof","8\" Touchscreen"], rec:false },
+
+  { id:6, trim:"HTK+(O)", engine:"Diesel 1.5", trans:"6AT", ex:1165900, onroad:1453707, badge:"Feature-rich", badgeBg:"#fef3c7", badgeFg:"#78350f",
+    highlights:["Crown Jewel LED Headlamps","Dual Dash Camera","Crystal Cut Alloys"],
+    features:["Crown Jewel LED Headlamps + Ice Cube LED Fog Lamps","R16 Crystal Cut Alloy Wheels","Indigo Pera Leatherette Seats","Dash Camera with Dual Camera","Remote Engine Start","Wireless Smartphone Charger","Smart Key with Push Button Start","Electric Sunroof","8\" Touchscreen"], rec:false },
+
+  { id:7, trim:"HTX", engine:"Petrol 1.0T", trans:"7DCT", ex:1164900, onroad:1444786, badge:"Sweet Spot ★", badgeBg:"#ede9fe", badgeFg:"#4c1d95",
+    highlights:["Ventilated Seats","Drive & Traction Modes","All Disc Brakes"],
+    features:["Front Ventilated Seats","Cruise Control","All Wheel Disc Brakes","Multi Drive Modes (Normal / Eco / Sport)","Traction Modes (Sand / Mud / Wet)","Paddle Shifters","Smart Air Purifier (Virus & Bacteria Protection)","Crown Jewel LED Headlamps","Crystal Cut Alloy Wheels","Electric Sunroof","Rear Parcel Shelf + Luggage Lamp"], rec:true },
+
+  { id:8, trim:"HTX", engine:"Diesel 1.5", trans:"6AT", ex:1209900, onroad:1506047, badge:"Sweet Spot", badgeBg:"#ede9fe", badgeFg:"#4c1d95",
+    highlights:["Ventilated Seats","Drive & Traction Modes","High Torque 250 Nm"],
+    features:["Front Ventilated Seats (6AT)","Cruise Control","All Wheel Disc Brakes","Multi Drive Modes (Normal / Eco / Sport)","Traction Modes (Sand / Mud / Wet)","Paddle Shifters","Smart Air Purifier","Black & Brown Leatherette Seats (6AT)","Crystal Cut Alloy Wheels","Remote Engine Start"], rec:false },
+
+  { id:9, trim:"GTX Plus", engine:"Petrol 1.0T", trans:"7DCT Mono", ex:1355900, onroad:1673636, badge:"Top Spec", badgeBg:"#fee2e2", badgeFg:"#7f1d1d",
+    highlights:["ADAS Level 1 (10 features)","10.25\" HD Screen","Bose 7-Speaker"],
+    features:["ADAS Level 1 — 10 Autonomous Safety Features","10.25\" HD Touchscreen + Full Digital Cluster","Kia Connect with OTA Updates","Bose Premium 7-Speaker System","360° Camera + Blind View Monitor","4-way Power Driver Seat","Ventilated Front Seats","Auto Anti-Glare IRVM + Kia Connect Controls","Front Parking Sensors","LED Ambient Sound Lighting","All Door Windows One Touch Up/Down"], rec:false },
+
+  { id:10, trim:"GTX Plus", engine:"Petrol 1.0T", trans:"7DCT Dual Tone", ex:1365900, onroad:1685516, badge:"Top Spec DT", badgeBg:"#fee2e2", badgeFg:"#7f1d1d",
+    highlights:["Dual Tone Color","ADAS Level 1","Bose 7-Speaker"],
+    features:["All GTX Plus Petrol features +","Dual Tone color: Pearl White/Aurora Black or Magma Red/Aurora Black","ADAS Level 1 — 10 Autonomous Safety Features","10.25\" HD Touchscreen + Full Digital Cluster","Bose Premium 7-Speaker","360° Camera + BVM","Kia Connect with OTA"], rec:false },
+
+  { id:11, trim:"GTX Plus", engine:"Diesel 1.5", trans:"6AT Mono", ex:1406900, onroad:1742292, badge:"Top Spec", badgeBg:"#fee2e2", badgeFg:"#7f1d1d",
+    highlights:["ADAS Level 1 (10 features)","10.25\" HD Screen","High Torque Diesel"],
+    features:["ADAS Level 1 — 10 Autonomous Safety Features","10.25\" HD Touchscreen + Full Digital Cluster","Kia Connect with OTA Updates","Bose Premium 7-Speaker System","360° Camera + Blind View Monitor","4-way Power Driver Seat","Ventilated Front Seats","Remote Engine Start","Front Parking Sensors","LED Ambient Sound Lighting"], rec:false },
+
+  { id:12, trim:"GTX Plus", engine:"Diesel 1.5", trans:"6AT Dual Tone", ex:1416900, onroad:1754187, badge:"Top Spec DT", badgeBg:"#fee2e2", badgeFg:"#7f1d1d",
+    highlights:["Dual Tone Color","ADAS Level 1","High Torque Diesel"],
+    features:["All GTX Plus Diesel features +","Dual Tone color option","ADAS Level 1 — 10 Autonomous Safety Features","10.25\" HD Touchscreen + Full Digital Cluster","Bose Premium 7-Speaker","360° Camera + BVM","Kia Connect with OTA"], rec:false },
+
+  { id:13, trim:"X-Line", engine:"Petrol 1.0T", trans:"7DCT", ex:1369900, onroad:1690271, badge:"Sporty Edition", badgeBg:"#f3f4f6", badgeFg:"#1f2937",
+    highlights:["Exclusive X-Line Styling","Sage Green Interior","ADAS Level 1"],
+    features:["All GTX Plus features +","Sage Green Leatherette Seats with Xclusive Sage Green Inserts","X-Line Badging & Styling throughout","Glossy Black Exterior Accents","Piano Black ORVMs & Shark Fin Antenna","Black High Gloss Tiger Nose Grille Surround","ADAS Level 1 — 10 Autonomous Safety Features","10.25\" HD Touchscreen + Bose 7-Speaker + 360° Camera"], rec:false },
+];
+
+function Card({ v }) {
+  const [open, setOpen] = React.useState(false);
+  const isPetrol = v.engine.includes("Petrol");
+  return (
+    <div className={`card${v.rec ? " recommended" : ""}`} onClick={() => setOpen(o => !o)}>
+      {v.rec && <div className="rec-bar">★ RECOMMENDED — Best Value Pick</div>}
+      <div className={`card-engine-bar ${isPetrol ? "petrol" : "diesel"}`}>
+        {isPetrol ? "⛽ Petrol 1.0T Turbo · 7DCT" : "🛢 Diesel 1.5 CRDi · 6AT"}
+      </div>
+      <div className="card-body">
+        <div className="card-top">
+          <div>
+            <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:4}}>
+              <span className="card-title">Sonet {v.trim}</span>
+              <span className="card-badge" style={{background:v.badgeBg, color:v.badgeFg}}>{v.badge}</span>
+            </div>
+            <div className="card-sub">{v.engine} · {v.trans}</div>
+          </div>
+          <div className="price-block">
+            <div className="price-main">{fmt(v.onroad)}</div>
+            <div className="price-label">total on-road</div>
+            <div className="price-ex">Ex: {fmt(v.ex)}</div>
+          </div>
+        </div>
+        <div className="divider" />
+        <div className="highlights">
+          {v.highlights.map((h,i) => <span key={i} className="hl-chip">{h}</span>)}
+        </div>
+        {open && (
+          <ul className="features-list">
+            {v.features.map((f,i) => <li key={i}>{f}</li>)}
+          </ul>
+        )}
+        <div className="expand-btn">
+          <span>{open ? "▲ Hide features" : "▼ Tap to see all features"}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [filter, setFilter] = React.useState("All");
+  const filtered = filter === "All" ? VARIANTS
+    : filter === "Petrol" ? VARIANTS.filter(v => v.engine.includes("Petrol"))
+    : VARIANTS.filter(v => v.engine.includes("Diesel"));
+
+  return (
+    <>
+      <div className="filter-bar">
+        <span>Filter:</span>
+        {["All","Petrol","Diesel"].map(f => (
+          <button key={f} className={`pill${filter===f?" active":""}`} onClick={() => setFilter(f)}>
+            {f === "All" ? "All Automatics" : f === "Petrol" ? "⛽ Petrol 1.0T (7DCT)" : "🛢 Diesel 1.5 (6AT)"}
+          </button>
+        ))}
+        <span style={{marginLeft:"auto", fontSize:12, color:"#888"}}>
+          {filtered.length} variant{filtered.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div className="grid">
+        {filtered.map(v => <Card key={v.id} v={v} />)}
+      </div>
+
+      <div className="note-bar">
+        <strong>On-road price includes:</strong> Road Tax · Registration · Insurance · FASTag · Extended Warranty · Kia Connect · Accessories &amp; MPP Kit &nbsp;|&nbsp;
+        1% TCS applicable on ex-showroom above ₹10 lakh &nbsp;|&nbsp; iMT variants excluded &nbsp;|&nbsp; DT = Dual Tone color &nbsp;|&nbsp;
+        Source: Incheon Motors Pvt Ltd Kerala, W.E.F. 01-04-2026
+      </div>
+
+      <div className="summary-section">
+        <h2>Quick price reference — all 13 automatic variants</h2>
+        <div style={{overflowX:"auto"}}>
+          <table className="summary-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Variant</th><th>Engine</th><th>Gearbox</th>
+                <th className="num">Ex-showroom</th><th className="num">On-Road Kerala</th>
+              </tr>
+            </thead>
+            <tbody>
+              {VARIANTS.map((v,i) => (
+                <tr key={v.id}>
+                  <td>{i+1}</td>
+                  <td>Sonet {v.trim} {v.rec && <span className="badge-rec">Best Pick</span>}</td>
+                  <td>{v.engine}</td>
+                  <td>{v.trans}</td>
+                  <td className="num">{fmt(v.ex)}</td>
+                  <td className="num">{fmt(v.onroad)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
